@@ -1,17 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.lodz.p.sudoku;
 
-import java.util.Arrays;
 
 /**
  *
  * @author Krzysiek Palka
  */
 public class SudokuBoard {
-
 
     private Boolean checkCell(int[][] currentBoard, int x, int y) {
         int currentElement = currentBoard[x][y];
@@ -47,67 +41,6 @@ public class SudokuBoard {
         return true;
     }
 
-    private Boolean done = false;
-
-    private Boolean createBoard(int[][] previousBoard, int currentCell) {
-        /*
-         *for (int i = 0; i < 9; i++) {
-         *   for (int j = 0; j < 9; j++) {
-         *       System.out.print(previousBoard[i][j]);
-         *       System.out.print(' ');
-         *   }
-         *   System.out.print('\n');
-         *}
-         *System.out.print('\n');
-         *System.out.print('\n');
-         */
-
-        if (done) {
-            return true;
-        }
-
-        if (currentCell == 81) {
-            for (int i = 0; i < 9; i++) {
-                System.arraycopy(previousBoard[i], 0, currentBoard[i], 0, 9);
-            }
-            done = true;
-            return true;
-        }
-
-        int y = currentCell / 9;
-        int x = currentCell % 9;
-
-        Boolean[] used = new Boolean[9];
-        Arrays.fill(used, false);
-        int usedCount = 0;
-        while (true) {
-            if (usedCount == 8) {
-                return false;
-            }
-            int rand;
-            while (true) {
-                rand = (int) (Math.random() * 9);
-                if (used[rand] == true) {
-                    continue;
-                }
-                used[rand] = true;
-                usedCount++;
-                break;
-            }
-            previousBoard[x][y] = rand + 1;
-            if (!checkCell(previousBoard, x, y)) {
-                previousBoard[x][y] = 0;
-                continue;
-            }
-            else {
-                if (createBoard(previousBoard.clone(), currentCell + 1)) {
-                    return true;
-                }
-            }
-        }
-
-    }
-
     /*
      *final private int[][] goodField = new int[][] {
      *{1, 2, 3, 4, 5, 6, 7, 8, 9},
@@ -122,15 +55,42 @@ public class SudokuBoard {
      */
 
 
+    private int[][] currentBoard = new int[9][9];
+
     public int[][] getCurrentBoard() {
         return currentBoard;
     }
 
-    private int[][] currentBoard = new int[9][9];
-
-    public void createBoard() {
-        createBoard(currentBoard, 0);
+    public void setCurrentBoard(int[][] currentBoard) {
+        this.currentBoard = currentBoard;
     }
+
+    public void setXY(int x, int y, int val) {
+        if (x > 9 || x < 1) {
+            throw new IndexOutOfBoundsException("Index of x -- " + x + " is out of bounds!");
+        }
+        if (y > 9 || y < 1) {
+            throw new IndexOutOfBoundsException("Index of y -- " + y + " is out of bounds!");
+        }
+        if (val > 9 || val < 1) {
+            throw new IndexOutOfBoundsException("Value of cell -- " + val + " is out of bounds!");
+        }
+        if (!checkCell(currentBoard, x, y)) {
+            throw new RuntimeException("Conflict with existing number in current row, column or group of cells ");
+        }
+        currentBoard[x][y] = val;
+    }
+
+    public int getXY(int x, int y) {
+        if (x > 9 || x < 1) {
+            throw new IndexOutOfBoundsException("Index of x -- " + x + " is out of bounds!");
+        }
+        if (y > 9 || y < 1) {
+            throw new IndexOutOfBoundsException("Index of y -- " + y + " is out of bounds!");
+        }
+        return currentBoard[x][y];
+    }
+
 
     public void printBoard() {
         for (int i = 0; i < 9; i++) {

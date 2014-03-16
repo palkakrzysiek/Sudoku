@@ -9,7 +9,8 @@ public class App
     public static void main( String[] args )
     {
         SudokuBoard board = new SudokuBoard();
-        board.createBoard();
+        SudokuSolver solver = new RecursiveBacktraceSolver();
+        solver.slove(board);
         board.printBoard();
     }
 
